@@ -1,6 +1,4 @@
 from drifts.acl import compare_acl
-
-
 def compare_interface(expected, current, portchannel_interfaces):
     missing = set(expected.keys()) - set(current.keys())
     if portchannel_interfaces:
@@ -41,6 +39,13 @@ def compare_interface(expected, current, portchannel_interfaces):
                 'type': 'interface_down',
                 'interface': interface
             })
+        if 'acl' in missing_keys:
+            for direction in expected_details['acl'].keys():
+                drifts.append({
+                    'type': 'missing_acl_direction',
+                    'direction':direction,
+                    'interface': interface
+                })
         for key in (set(expected_details.keys()) & (set(current_details.keys()) - {'status'})):
             if key == 'vlans':
                 missing_interface_key = set(expected_details.get(key)) - set(current_details.get(key))

@@ -20,6 +20,6 @@ def get_run():
         conn.enable()
         run_config=conn.send_command("sh run",expect_string=r"#",read_timeout=120)
         #conn.save_config()
-        with open(f"{device_list}{str(datetime.now().isoformat()).replace(':','').replace('.','_')}","w") as file:
+        with open(f"device_run_configs\{device_list}{str(datetime.now().isoformat()).replace(':','').replace('.','_')}","w") as file:
             file.write(run_config)
         conn.disconnect()
