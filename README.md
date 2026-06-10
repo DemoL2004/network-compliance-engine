@@ -29,7 +29,7 @@ The topology follows a hierarchical enterprise campus design with redundant upli
 
 ## Architecture
 
-![Architecture](docs/architecture.png)
+![Architecture](docsContinuous_Compliance.png)
 
 ### Compliance Workflow
 
