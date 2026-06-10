@@ -1,0 +1,11 @@
+services:
+  compliance_image:
+    build: .
+    container_name: compliance_container
+    volumes:
+      - ./health_status:/app/health_status
+      - ./network_status:/app/network_status
+      - ./remediate_status:/app/remediate_status
+      - ./device_run_configs:/app/device_run_configs
+
+    restart: unless-stopped

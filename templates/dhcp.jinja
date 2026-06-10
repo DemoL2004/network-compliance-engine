@@ -1,0 +1,6 @@
+ip dhcp pool VLAN{{vlan_id}}
+network {{vlan_data.get('dhcp').get('ip')}} {{vlan_data.get('dhcp').get('subnet')}}
+default-router {{vlan_data.get('dhcp').get('default_gateway')}}
+{% endif%}
+{% endfor%}
+{% endif %}

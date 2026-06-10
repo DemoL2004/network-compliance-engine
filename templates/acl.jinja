@@ -1,0 +1,5 @@
+
+ip access-list {{acl.get('mode')}} {{acl.get('name')}}
+{% for seq_num,seq in acl.get('seq').items() %}
+{{seq_num}} {{seq.get('action')}}  {{seq.get('packet_type','ip') }} {{seq.get('source_network')}} {{seq.get('source_wildcard','') }} {{seq.get('source_port_comparator','') }} {{seq.get('source_port','') }} {{seq.get('destination_network')}} {{seq.get('destination_wildcard','') }}  {{seq.get('destination_port_comparator','') }} {{seq.get('destination_port','') }}
+{% endfor %}

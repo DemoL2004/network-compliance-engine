@@ -1,0 +1,20 @@
+global:
+  username: example
+  password: example
+  secret: example
+
+devices:
+  DIST1:
+    ip: 192.168.99.2
+  DIST2:
+    ip: 192.168.99.3
+  CORE:
+    ip: 192.168.99.4
+  ACC1:
+    ip: 192.168.99.11
+  ACC2:
+    ip: 192.168.99.12
+  ACC3:
+    ip: 192.168.99.13
+  ACC4:
+    ip: 192.168.99.14

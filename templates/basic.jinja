@@ -1,0 +1,90 @@
+hostname {{device}}
+{% if not ip_routing %}
+no ip routing
+{% endif %}
+spanning-tree mode {{global_config.stp.mode}}
+ip domain-name {{global_config.domain_name}}
+{% if vlans is defined %}
+{% for vlan_id,vlan_data in vlans.items() %}
+vlan {{vlan_id}}
+name {{vlan_data.get('name')}}
+{% endfor%}
+{% endif%}
+
+
+{% if dhcp is defined %}
+{% for dhcp_id,dhcp_data in dhcp.items() %}
+ip dhcp pool VLAN{{dhcp_id}}
+network {{dhcp_data.get('ip')}} {{dhcp_data.get('subnet')}}
+default-router {{dhcp_data.get('default_gateway')}}
+{% endfor %}
+{% endif %}
+
+
+{% if etherchannel is defined %}
+{% for portchannel_number,portchannel in etherchannel.items()%}
+{% for interface in portchannel.get('interfaces') %}
+int {{interface}}
+channel-group {{portchannel_number}} mode {{portchannel.get('mode')}}
+{% endfor%}
+{% endfor %}
+{% endif%}
+
+{% for interface_id,interface_data in interfaces.items() %}
+{% if interface_data.get('acl') %}
+{% for direction,acl in interface_data.acl.items() %}
+{% include 'acl.jinja' %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+{% for interface_id,interface_data in interfaces.items() %}
+{% include 'interface.jinja' %}
+{% endfor %}
+
+{% if routes is defined %}
+{% for route in routes %}
+ip route {{route.get('source')}} {{route.get('subnet')}} {{route.get('interface','')}} {{route.get('destination','')}} {{route.get('distance_metric','')}}
+{% endfor %}
+{% endif %}
+
+{% if ospf is defined %}
+{% set ospf_process = global_config.ospf.process_id %}
+router ospf {{ospf_process}}
+router-id {{ospf.get('router_id')}}
+{% if  global_config.ospf.default_passive_interface %}
+passive-interface default
+{% endif %}
+{% if ospf.get('default_information') %}
+default-information originate
+{% endif %}
+{% for interface in ospf.get('advt_interfaces') %}
+no passive-interface {{interface}}
+{% endfor%}
+{% for interface,info in ospf.get('net_interfaces').items() %}
+int {{interface}}
+ip ospf {{ospf_process}} area {{info.get('area')}}
+{% endfor%}
+{% endif %}
+
+{% if hsrp is defined %}
+{% for interface in hsrp %}
+int {{interface}}
+{% for group,group_details in hsrp.get(interface).items() %}
+{% if global_config.hsrp.preemption %}
+standby {{group}} preempt
+{% endif %}
+standby {{group}} ip {{group_details.get('ip')}}
+{% if group_details.get('role') == 'primary' %}
+standby {{group}} priority 110
+{% endif%}
+{% endfor%}
+{% endfor%}
+{% endif%}
+
+
+{% if stp is defined %}
+{% for vlan in stp %}
+spanning-tree vlan {{vlan}} root {{stp.get(vlan)}}
+{% endfor %}
+{% endif %}

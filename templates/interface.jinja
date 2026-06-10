@@ -1,0 +1,29 @@
+int {{interface_id}}
+
+{% if interface_data.get('type') == 'routed' %}
+no switchport
+{% endif  %}
+
+{% if interface_data.get('ip') %}
+ip address {{interface_data.get('ip')}} {{interface_data.get('subnet')}}
+{% endif %}
+
+{% if interface_data.get('mode') %}
+
+{% if interface_data.get('mode') == 'trunk' %}
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan {{interface_data.get('vlans') | join(',')}}
+{% elif interface_data.get('mode') == 'access'%}
+switchport mode access
+switchport access vlan {{interface_data.get('vlan')}}
+{% endif %}
+
+{% endif %}
+
+{% if interface_data.get('acl') %}
+{% for direction,acl in interface_data.get('acl').items() %}
+ip access-group {{acl.get('name')}} {{acl.get('direction')}}
+{% endfor %}
+{% endif %}
+
