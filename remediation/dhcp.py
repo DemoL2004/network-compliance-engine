@@ -4,6 +4,22 @@ def handle_drift_dhcp(drifts, device, device_info, health_report):
     if drifts:
         net_conf = set()
         for drift in drifts:
+            if drift['type'] == 'dhcp_pool_extra':
+                report.append({
+                    'driftid': f"{device}:DHCP_POOL_EXTRA:{drift['pool']}",
+                    'severity': 'WARNING',
+                    'category': 'DHCP',
+                    'device': device,
+                    'message': f"EXTRA DHCP POOL {drift['pool']}"
+                })
+                remediate.append({
+                    'driftid': f"{device}:DHCP_POOL_EXTRA:{drift['pool']}",
+                    'commands': [
+                        f"no ip dhcp pool {drift['pool']}"
+                    ]
+                })
+
+        for drift in drifts:
             if drift['type'] == 'dhcp_pool_missing':
                 report.append({
                     'driftid': f"{device}:DHCP_POOL_MISSING:{drift['pool']}",
@@ -21,20 +37,6 @@ def handle_drift_dhcp(drifts, device, device_info, health_report):
                     ]
                 })
 
-            elif drift['type'] == 'dhcp_pool_extra':
-                report.append({
-                    'driftid': f"{device}:DHCP_POOL_EXTRA:{drift['pool']}",
-                    'severity': 'WARNING',
-                    'category': 'DHCP',
-                    'device': device,
-                    'message': f"EXTRA DHCP POOL {drift['pool']}"
-                })
-                remediate.append({
-                    'driftid': f"{device}:DHCP_POOL_EXTRA:{drift['pool']}",
-                    'commands': [
-                        f"no ip dhcp pool {drift['pool']}"
-                    ]
-                })
 
             elif drift['type'] == 'extra_key':
                 report.append({
