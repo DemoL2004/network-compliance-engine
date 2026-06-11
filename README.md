@@ -10,6 +10,16 @@ The application is containerized using Docker and Docker Compose for simplified 
 
 ---
 
+
+## Demonstration
+
+Video demonstration of the compliance engine in action:
+
+[Demonstration](https://youtu.be/gImR_BHZClA)
+
+---
+
+
 ## Lab Topology
 
 ![Lab Topology](docs/topology.png)
